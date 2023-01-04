@@ -46,13 +46,9 @@ func (b *Board) isValidMove(fx, fy, tx, ty int) bool {
 	// Capture not working yet.
 	if b[fx][fy] == bP {
 		// Check if the pawn is trying to capture a piece
-		if ty != fy && b[tx][ty] != Empty {
-			if fx-tx != 1 {
+		if b[tx][ty] != Empty && b[fx][fy] == bP && b[tx][ty] <= wP {
+			if abs(fx-tx) != 1 || abs(fy-ty) != 1 {
 				// Black pawns can only capture pieces that are 1 space forward and diagonal
-				return false
-			}
-			if abs(fx-tx) != abs(fy-ty) {
-				// Pawns can only capture pieces that are diagonal
 				return false
 			}
 		} else {
@@ -82,28 +78,38 @@ func (b *Board) isValidMove(fx, fy, tx, ty int) bool {
 	}
 
 	if b[fx][fy] == wP {
-		if ty != fy {
-			// Pawns can only move straight forward
-			return false
-		}
-		if tx > fx {
-			// Pawns can only move forward, not backward
-			return false
-		}
-		if fx-tx > 2 {
-			// Pawns can only move 1 or 2 spaces from their starting position
-			return false
-		}
-		if fx-tx == 2 && fx != 6 {
-			// Pawns can only move 2 spaces from their starting position
-			return false
-		}
-		if b[tx][ty] != Empty {
-			// Pawns can only move to an empty space
-			return false
+		// Check if the pawn is trying to capture a piece
+		if b[tx][ty] != Empty && b[fx][fy] == wP && b[tx][ty] >= bP {
+			if abs(fx-tx) != 1 || abs(fy-ty) != 1 {
+				// Black pawns can only capture pieces that are 1 space forward and diagonal
+				return false
+			}
+		} else {
+			// Check if the pawn is moving forward
+			if ty != fy {
+				// Pawns can only move straight forward
+				return false
+			}
+			if tx > fx {
+				// Pawns can only move forward, not backward
+				return false
+			}
+			if fx-tx > 2 {
+				// Pawns can only move 1 or 2 spaces from their starting position
+				return false
+			}
+			if fx-tx == 2 && fx != 6 {
+				// Pawns can only move 2 spaces from their starting position
+				return false
+			}
+			if b[tx][ty] != Empty {
+				// Pawns can only move to an empty space or capture an opponent's piece
+				return false
+			}
 		}
 		return true
 	}
+
 	if b[fx][fy] == Empty {
 		return false
 	}
