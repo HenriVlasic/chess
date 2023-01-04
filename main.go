@@ -43,43 +43,80 @@ func (b *Board) MovePiece(from, to string) error {
 }
 
 func (b *Board) isValidMove(fx, fy, tx, ty int) bool {
-	// Check if the destination is a valid square on the board
-	if tx < 0 || tx > 7 || ty < 0 || ty > 7 {
+	// Capture not working yet.
+	if b[fx][fy] == bP {
+		// Check if the pawn is trying to capture a piece
+		if ty != fy && b[tx][ty] != Empty {
+			if fx-tx != 1 {
+				// Black pawns can only capture pieces that are 1 space forward and diagonal
+				return false
+			}
+			if abs(fx-tx) != abs(fy-ty) {
+				// Pawns can only capture pieces that are diagonal
+				return false
+			}
+		} else {
+			// Check if the pawn is moving forward
+			if ty != fy {
+				// Pawns can only move straight forward
+				return false
+			}
+			if tx < fx {
+				// Pawns can only move forward, not backward
+				return false
+			}
+			if tx-fx > 2 {
+				// Pawns can only move 1 or 2 spaces from their starting position
+				return false
+			}
+			if tx-fx == 2 && fx != 1 {
+				// Pawns can only move 2 spaces from their starting position
+				return false
+			}
+			if b[tx][ty] != Empty {
+				// Pawns can only move to an empty space
+				return false
+			}
+		}
 		return true
 	}
 
-	// Get the piece at the starting position
-	piece := b[fx][fy]
-
-	// Check if the piece is a pawn
-	if piece != bP && piece != wP {
+	if b[fx][fy] == wP {
+		if ty != fy {
+			// Pawns can only move straight forward
+			return false
+		}
+		if tx > fx {
+			// Pawns can only move forward, not backward
+			return false
+		}
+		if fx-tx > 2 {
+			// Pawns can only move 1 or 2 spaces from their starting position
+			return false
+		}
+		if fx-tx == 2 && fx != 6 {
+			// Pawns can only move 2 spaces from their starting position
+			return false
+		}
+		if b[tx][ty] != Empty {
+			// Pawns can only move to an empty space
+			return false
+		}
+		return true
+	}
+	if b[fx][fy] == Empty {
 		return false
 	}
+	// Other checks for other piece types go here
 
-	// Check if the pawn is moving forward
-	if fy > ty {
-		return true
-	}
-
-	// Check if the pawn is moving two squares forward from its starting position
-	if fy == 1 && fy == ty-2 {
-		return true
-	}
-
-	// Check if the pawn is moving one square forward
-	if fy == ty-1 {
-		return true
-	}
-
-	// Check if the pawn is capturing a piece diagonally
-	if fx == tx+1 || fx == tx-1 {
-		if fy == ty-1 {
-			return true
-		}
-	}
-
-	// If none of the above conditions are met, the move is invalid
 	return true
+}
+
+func abs(x int) int {
+	if x < 0 {
+		return -x
+	}
+	return x
 }
 
 func parseCoordinates(s string) (int, int) {
