@@ -43,10 +43,11 @@ func (b *Board) MovePiece(from, to string) error {
 }
 
 func (b *Board) isValidMove(fx, fy, tx, ty int) bool {
-	// Capture not working yet.
+	// Pawns Logic
+	// Black Pawn
 	if b[fx][fy] == bP {
 		// Check if the pawn is trying to capture a piece
-		if b[tx][ty] != Empty && b[fx][fy] == bP && b[tx][ty] <= wP {
+		if b[tx][ty] != Empty && (b[fx][fy] == bP || b[fx][fy] == bR || b[fx][fy] == bN || b[fx][fy] == bB || b[fx][fy] == bK || b[fx][fy] == bQ) && (b[tx][ty] == wP || b[tx][ty] == wR || b[tx][ty] == wN || b[tx][ty] == wB || b[tx][ty] == wK || b[tx][ty] == wQ) {
 			if abs(fx-tx) != 1 || abs(fy-ty) != 1 {
 				// Black pawns can only capture pieces that are 1 space forward and diagonal
 				return false
@@ -76,10 +77,10 @@ func (b *Board) isValidMove(fx, fy, tx, ty int) bool {
 		}
 		return true
 	}
-
+	// White Pawn
 	if b[fx][fy] == wP {
 		// Check if the pawn is trying to capture a piece
-		if b[tx][ty] != Empty && b[fx][fy] == wP && b[tx][ty] >= bP {
+		if b[tx][ty] != Empty && (b[fx][fy] == wP || b[fx][fy] == wR || b[fx][fy] == wN || b[fx][fy] == wB || b[fx][fy] == wK || b[fx][fy] == wQ) && (b[tx][ty] == bP || b[tx][ty] == bR || b[tx][ty] == bN || b[tx][ty] == bB || b[tx][ty] == bK || b[tx][ty] == bQ) {
 			if abs(fx-tx) != 1 || abs(fy-ty) != 1 {
 				// Black pawns can only capture pieces that are 1 space forward and diagonal
 				return false
@@ -109,11 +110,48 @@ func (b *Board) isValidMove(fx, fy, tx, ty int) bool {
 		}
 		return true
 	}
+	// Rooks Logic
+	// Black Rook
+	if b[fx][fy] == bR {
+		if b[tx][ty] != Empty && (b[tx][ty] == bP || b[tx][ty] == bR || b[tx][ty] == bN || b[tx][ty] == bB || b[tx][ty] == bK || b[tx][ty] == bQ) {
 
+			return false
+
+		} else {
+			if ty != fy && tx != fx {
+				// Rooks can only move in straight lines
+				return false
+			}
+		}
+
+		return true
+
+	}
+
+	// White Rook
+	if b[fx][fy] == wR {
+		if b[tx][ty] != Empty && (b[tx][ty] == wP || b[tx][ty] == wR || b[tx][ty] == wN || b[tx][ty] == wB || b[tx][ty] == wK || b[tx][ty] == wQ) {
+
+			return false
+
+		} else {
+			if ty != fy && tx != fx {
+				// Rooks can only move in straight lines
+				return false
+			}
+		}
+
+		return true
+
+	}
+
+	// Other checks for other piece types go here
+
+	// Empty Squares
+	// Checking if it is empty
 	if b[fx][fy] == Empty {
 		return false
 	}
-	// Other checks for other piece types go here
 
 	return true
 }
