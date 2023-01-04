@@ -11,3 +11,6 @@ commands.
 ![image](https://user-images.githubusercontent.com/92248859/210617730-9361d82c-09e8-4fca-a71c-36aa3a68dadb.png)
 
 My program will not be focused on the graphical board, so probably I won't spend much time making it look good.
+
+
+# Clearly it is not ready!
