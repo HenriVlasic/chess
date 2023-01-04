@@ -32,20 +32,53 @@ func (b *Board) MovePiece(from, to string) error {
 	fx, fy := parseCoordinates(from)
 	tx, ty := parseCoordinates(to)
 
-	if !isValidMove(fx, fy, tx, ty) {
+	if !b.isValidMove(fx, fy, tx, ty) {
 		return errors.New("invalid move")
 	}
 
-	// Update the board with the new position of the piece
 	b[tx][ty] = b[fx][fy]
 	b[fx][fy] = Empty
 
 	return nil
 }
 
-func isValidMove(fx, fy, tx, ty int) bool {
-	// Check if the move is legal according to the rules of chess
-	// (e.g. pawns can only move forward, knights can jump over pieces, etc.)
+func (b *Board) isValidMove(fx, fy, tx, ty int) bool {
+	// Check if the destination is a valid square on the board
+	if tx < 0 || tx > 7 || ty < 0 || ty > 7 {
+		return true
+	}
+
+	// Get the piece at the starting position
+	piece := b[fx][fy]
+
+	// Check if the piece is a pawn
+	if piece != bP && piece != wP {
+		return false
+	}
+
+	// Check if the pawn is moving forward
+	if fy > ty {
+		return true
+	}
+
+	// Check if the pawn is moving two squares forward from its starting position
+	if fy == 1 && fy == ty-2 {
+		return true
+	}
+
+	// Check if the pawn is moving one square forward
+	if fy == ty-1 {
+		return true
+	}
+
+	// Check if the pawn is capturing a piece diagonally
+	if fx == tx+1 || fx == tx-1 {
+		if fy == ty-1 {
+			return true
+		}
+	}
+
+	// If none of the above conditions are met, the move is invalid
 	return true
 }
 
@@ -132,7 +165,6 @@ func main() {
 		if input == "quit" {
 			break
 		}
-		// Parse the input and make a move on the board
 		from, to, err := parseInput(input)
 		if err != nil {
 			fmt.Println(err)
@@ -143,7 +175,6 @@ func main() {
 			fmt.Println(err)
 			continue
 		}
-		// Print the updated board
 		printBoard(b)
 	}
 }
