@@ -242,41 +242,6 @@ func (b *Board) IsLegalMove(piece Piece, newPos string) bool {
 				}
 			}
 		}
-	case "rook":
-		// Rooks can only move horizontally or vertically
-		if newRow != currRow && newCol != currCol {
-			return false
-		}
-		// Check for pieces blocking the path
-		if newRow == currRow {
-			if newCol > currCol {
-				for i := currCol + 1; i < newCol; i++ {
-					if b[newRow][i] != "" {
-						return false
-					}
-				}
-			} else {
-				for i := currCol - 1; i > newCol; i-- {
-					if b[newRow][i] != "" {
-						return false
-					}
-				}
-			}
-		} else {
-			if newRow > currRow {
-				for i := currRow + 1; i < newRow; i++ {
-					if b[i][newCol] != "" {
-						return false
-					}
-				}
-			} else {
-				for i := currRow - 1; i > newRow; i-- {
-					if b[i][newCol] != "" {
-						return false
-					}
-				}
-			}
-		}
 	case "queen":
 		// Queens can move diagonally, horizontally, or vertically
 		if newRow != currRow && newCol != currCol {
